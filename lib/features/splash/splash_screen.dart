@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/providers/auth_provider.dart';
+import '../../core/providers/onboarding_provider.dart';
 import '../../core/router/route_paths.dart';
 import '../../core/theme/app_colors.dart';
 
-/// The first Flutter route (distinct from the OS-level native splash
-/// configured via flutter_native_splash in pubspec.yaml — that one covers
-/// the gap before the Flutter engine has even attached).
-///
-/// This is where startup work happens: for now it just pauses briefly and
-/// moves on to onboarding.
-class SplashScreen extends StatefulWidget {
+/// The first Flutter route (distinct from the OS-level native splash).
+/// Pauses briefly and redirects based on auth and onboarding state.
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
@@ -28,11 +27,20 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(milliseconds: 1200));
     if (!mounted) return;
 
-    // TODO (Phase 2, step 9): replace this with a real check —
-    // watch authStateProvider and go straight to /home if already signed
-    // in, /login if not, and only show onboarding on first launch
-    // (e.g. a "hasSeenOnboarding" flag via shared_preferences).
-    context.goNamed(RoutePaths.onboarding);
+    final user = ref.read(authStateProvider).value;
+    if (user != null) {
+      context.goNamed(RoutePaths.home);
+      return;
+    }
+
+    final hasSeenOnboarding = await ref.read(hasSeenOnboardingProvider.future);
+    if (!mounted) return;
+
+    if (hasSeenOnboarding) {
+      context.goNamed(RoutePaths.login);
+    } else {
+      context.goNamed(RoutePaths.onboarding);
+    }
   }
 
   @override

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'route_paths.dart';
+import '../providers/auth_provider.dart';
 
 import '../../features/splash/splash_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
@@ -24,15 +25,36 @@ import '../../features/settings/screens/notifications_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
-/// Exposed as a provider (not a bare GoRouter) so that
-/// we can swap this for a version built from `ref.watch(authStateProvider)`
-/// and add a `redirect:` that bounces signed-out users to /login and
-/// signed-in users away from /login and /onboarding.
+/// Exposed as a provider listening to `authStateProvider` with a `redirect:`
+/// that bounces signed-out users to /login and signed-in users away from auth screens.
 final appRouterProvider = Provider<GoRouter>((ref) {
+  final authAsync = ref.watch(authStateProvider);
+
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/${RoutePaths.splash}',
     debugLogDiagnostics: true,
+    redirect: (context, state) {
+      final authValue = authAsync.value;
+      final isAuthenticated = authValue != null;
+
+      final location = state.matchedLocation;
+      final isAuthOrSplashRoute = location == '/${RoutePaths.splash}' ||
+          location == '/${RoutePaths.onboarding}' ||
+          location == '/${RoutePaths.login}' ||
+          location == '/${RoutePaths.signUp}' ||
+          location == '/${RoutePaths.forgotPassword}';
+
+      if (isAuthenticated && isAuthOrSplashRoute && location != '/${RoutePaths.splash}') {
+        return '/${RoutePaths.home}';
+      }
+
+      if (!isAuthenticated && !isAuthOrSplashRoute) {
+        return '/${RoutePaths.login}';
+      }
+
+      return null;
+    },
     routes: [
       GoRoute(
         path: '/${RoutePaths.splash}',
