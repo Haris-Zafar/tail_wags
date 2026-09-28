@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Temporary scaffold used to stub out every route in Phase 1 so the whole
-/// app is navigable before any real screen UI exists. Swap each usage out
-/// for the real screen as you reach it in Phases 2–5 — the router doesn't
-/// need to change when you do.
 class PlaceholderScreen extends StatelessWidget {
   const PlaceholderScreen({
     super.key,

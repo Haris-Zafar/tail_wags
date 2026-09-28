@@ -40,7 +40,6 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: AppColors.primary,
       body: Center(
-        // Swap for the real logo once it's added to assets/images/.
         child: Image.asset(
           'assets/images/logo.png',
           width: 120,
