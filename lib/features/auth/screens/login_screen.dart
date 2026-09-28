@@ -131,7 +131,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           TextSpan(
                             text: 'To Your Account',
                             style: AppTextStyles.headline.copyWith(
-                              color: AppColors.textPrimary,
+                              color: AppColors.textPrimaryOf(context),
                               fontSize: 28,
                             ),
                           ),
@@ -144,7 +144,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     // Subtitle
                     Text(
                       'Enter given detail to login to your account',
-                      style: AppTextStyles.caption.copyWith(fontSize: 14),
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.textSecondaryOf(context),
+                        fontSize: 14,
+                      ),
                     ),
 
                     const SizedBox(height: 32),
@@ -189,7 +192,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           'Forgot Password?',
                           style: AppTextStyles.body.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textPrimary,
+                            color: AppColors.textPrimaryOf(context),
                           ),
                         ),
                       ),
@@ -212,7 +215,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         'OR',
                         style: AppTextStyles.body.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                          color: AppColors.textPrimaryOf(context),
                         ),
                       ),
                     ),
@@ -235,7 +238,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             TextSpan(
                               text: 'If you don\'t have an account ',
                               style: AppTextStyles.body.copyWith(
-                                color: AppColors.textPrimary,
+                                color: AppColors.textPrimaryOf(context),
                               ),
                             ),
                             TextSpan(

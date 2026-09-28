@@ -133,7 +133,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           TextSpan(
                             text: 'Account',
                             style: AppTextStyles.headline.copyWith(
-                              color: AppColors.textPrimary,
+                              color: AppColors.textPrimaryOf(context),
                               fontSize: 28,
                             ),
                           ),
@@ -146,7 +146,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     // Subtitle
                     Text(
                       'Enter given detail to create your account',
-                      style: AppTextStyles.caption.copyWith(fontSize: 14),
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.textSecondaryOf(context),
+                        fontSize: 14,
+                      ),
                     ),
 
                     const SizedBox(height: 32),
@@ -206,7 +209,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         'OR',
                         style: AppTextStyles.body.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                          color: AppColors.textPrimaryOf(context),
                         ),
                       ),
                     ),
@@ -229,7 +232,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             TextSpan(
                               text: 'If you have an account ',
                               style: AppTextStyles.body.copyWith(
-                                color: AppColors.textPrimary,
+                                color: AppColors.textPrimaryOf(context),
                               ),
                             ),
                             TextSpan(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 
 class AppTextField extends StatefulWidget {
@@ -37,7 +38,13 @@ class _AppTextFieldState extends State<AppTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.label, style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600)),
+        Text(
+          widget.label,
+          style: AppTextStyles.body.copyWith(
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimaryOf(context),
+          ),
+        ),
         const SizedBox(height: 8),
         TextFormField(
           controller: widget.controller,
@@ -47,12 +54,18 @@ class _AppTextFieldState extends State<AppTextField> {
           validator: widget.validator,
           autofillHints: widget.autofillHints,
           onFieldSubmitted: widget.onFieldSubmitted,
-          style: AppTextStyles.body,
+          style: AppTextStyles.body.copyWith(
+            color: AppColors.textPrimaryOf(context),
+          ),
           decoration: InputDecoration(
             hintText: widget.hint,
             suffixIcon: widget.obscureText
                 ? IconButton(
-                    icon: Icon(_obscured ? Icons.visibility_off_outlined : Icons.visibility_outlined),
+                    icon: Icon(
+                      _obscured
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                    ),
                     onPressed: () => setState(() => _obscured = !_obscured),
                   )
                 : null,

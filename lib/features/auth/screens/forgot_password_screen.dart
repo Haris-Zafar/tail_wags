@@ -43,7 +43,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Password reset link sent to your email.'),
-          backgroundColor: AppColors.success,
+          backgroundColor: AppColors.error,
         ),
       );
       context.goNamed(RoutePaths.login);
@@ -99,7 +99,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                           TextSpan(
                             text: 'Password',
                             style: AppTextStyles.headline.copyWith(
-                              color: AppColors.textPrimary,
+                              color: AppColors.textPrimaryOf(context),
                               fontSize: 28,
                             ),
                           ),
@@ -111,7 +111,10 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
                     Text(
                       'Enter given detail to receive a password reset link',
-                      style: AppTextStyles.caption.copyWith(fontSize: 14),
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.textSecondaryOf(context),
+                        fontSize: 14,
+                      ),
                     ),
 
                     const SizedBox(height: 32),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 
 class OnboardingPageData {
@@ -40,6 +41,7 @@ class OnboardingPage extends StatelessWidget {
           Text(
             data.title,
             style: AppTextStyles.headline.copyWith(
+              color: AppColors.textPrimaryOf(context),
               height: 1.2,
             ),
             textAlign: TextAlign.center,
@@ -48,6 +50,7 @@ class OnboardingPage extends StatelessWidget {
           Text(
             data.subtitle,
             style: AppTextStyles.caption.copyWith(
+              color: AppColors.textSecondaryOf(context),
               fontSize: 14,
               height: 1.4,
             ),

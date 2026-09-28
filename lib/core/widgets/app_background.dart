@@ -16,6 +16,15 @@ class AppBackground extends StatelessWidget {
       return child;
     }
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    if (isDark) {
+      return Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: child,
+      );
+    }
+
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(

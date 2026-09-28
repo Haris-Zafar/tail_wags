@@ -17,8 +17,8 @@ class GoogleSignInButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: isLoading ? null : onPressed,
       style: OutlinedButton.styleFrom(
-        side: const BorderSide(color: AppColors.border),
-        foregroundColor: AppColors.textPrimary,
+        side: BorderSide(color: AppColors.borderOf(context)),
+        foregroundColor: AppColors.textPrimaryOf(context),
       ),
       child: isLoading
           ? const SizedBox(
@@ -45,7 +45,9 @@ class GoogleSignInButton extends StatelessWidget {
                 const SizedBox(width: 12),
                 Text(
                   'Continue with Google',
-                  style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
+                  style: AppTextStyles.body.copyWith(
+                    color: AppColors.textPrimaryOf(context),
+                  ),
                 ),
               ],
             ),
