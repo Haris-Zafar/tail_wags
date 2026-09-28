@@ -1,21 +1,80 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/router/route_paths.dart';
-import '../../../core/widgets/placeholder_screen.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/app_background.dart';
+import '../providers/events_provider.dart';
+import '../widgets/event_card.dart';
+import '../widgets/filter_sheet.dart';
 
-/// Stub for now — grid/list of EventCards + the filter bottom sheet are
-/// built in Phase 4, step 15.
-class FeaturesScreen extends StatelessWidget {
+class FeaturesScreen extends ConsumerWidget {
   const FeaturesScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return PlaceholderScreen(
-      title: 'Features',
-      subtitle: 'All events (with filter icon) go here.',
-      nextLabel: 'Create event (test)',
-      onNext: () => context.goNamed(RoutePaths.createEvent),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final eventsAsync = ref.watch(allEventsProvider);
+    final events = eventsAsync.value ?? sampleEvents;
+
+    final textPrimary = AppColors.textPrimaryOf(context);
+
+    return Scaffold(
+      body: AppBackground(
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Features',
+                      style: AppTextStyles.headline.copyWith(
+                        color: textPrimary,
+                        fontSize: 24,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceMuted,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.tune, size: 20),
+                      ),
+                      onPressed: () => FilterSheet.show(context),
+                      tooltip: 'Filter Events',
+                    ),
+                  ],
+                ),
+              ),
+
+              // Events List
+              Expanded(
+                child: events.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No events found',
+                          style: AppTextStyles.body.copyWith(
+                            color: AppColors.textSecondaryOf(context),
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                        itemCount: events.length,
+                        itemBuilder: (context, index) {
+                          return EventCard(event: events[index]);
+                        },
+                      ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
