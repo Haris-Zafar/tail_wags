@@ -14,9 +14,20 @@ class FirebaseAuthService {
   final FirebaseAuth _auth;
   final GoogleSignIn _googleSignIn;
   final FirestoreService _firestoreService;
+  bool _isGoogleSignInInitialized = false;
 
   Stream<User?> get authStateChanges => _auth.authStateChanges();
   User? get currentUser => _auth.currentUser;
+
+  Future<void> _ensureGoogleSignInInitialized() async {
+    if (!_isGoogleSignInInitialized) {
+      await _googleSignIn.initialize(
+        serverClientId:
+            '536162640690-f6rl7autnkp20hlnmjepr9sq6mqp5k48.apps.googleusercontent.com',
+      );
+      _isGoogleSignInInitialized = true;
+    }
+  }
 
   Future<UserCredential> signUpWithEmail({
     required String email,
@@ -52,26 +63,36 @@ class FirebaseAuthService {
   }
 
   Future<UserCredential?> signInWithGoogle() async {
-    final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
+    await _ensureGoogleSignInInitialized();
 
-    final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+    try {
+      final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
 
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      idToken: googleAuth.idToken,
-    );
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
-    final userCredential = await _auth.signInWithCredential(credential);
-
-    if (userCredential.user != null) {
-      final user = userCredential.user!;
-      await _firestoreService.createUserDoc(
-        uid: user.uid,
-        email: user.email ?? '',
-        username: user.displayName ?? user.email?.split('@').first ?? 'User',
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
       );
-    }
 
-    return userCredential;
+      final userCredential = await _auth.signInWithCredential(credential);
+
+      if (userCredential.user != null) {
+        final user = userCredential.user!;
+        await _firestoreService.createUserDoc(
+          uid: user.uid,
+          email: user.email ?? '',
+          username: user.displayName ?? user.email?.split('@').first ?? 'User',
+        );
+      }
+
+      return userCredential;
+    } on GoogleSignInException catch (e) {
+      if (e.code == GoogleSignInExceptionCode.canceled) {
+        // User canceled sign-in
+        return null;
+      }
+      rethrow;
+    }
   }
 
   Future<void> sendPasswordResetEmail(String email) async {
@@ -79,7 +100,11 @@ class FirebaseAuthService {
   }
 
   Future<void> signOut() async {
-    await _googleSignIn.signOut();
+    try {
+      await _googleSignIn.signOut();
+    } catch (_) {
+      // Ignore sign out errors if user wasn't signed in via Google
+    }
     await _auth.signOut();
   }
 }

@@ -5,11 +5,7 @@ import '../../../core/providers/auth_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../models/poll_model.dart';
-import '../services/poll_service.dart';
-
-final pollServiceProvider = Provider<PollService>((ref) {
-  return PollService();
-});
+import '../providers/polls_provider.dart';
 
 class PollCard extends ConsumerStatefulWidget {
   const PollCard({

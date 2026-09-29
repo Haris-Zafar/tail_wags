@@ -93,8 +93,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Google Sign-In failed. Please try again.'),
+        SnackBar(
+          content: Text('Google Sign-In failed: ${e.toString()}'),
           backgroundColor: AppColors.error,
         ),
       );

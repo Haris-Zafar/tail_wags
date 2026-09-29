@@ -14,7 +14,7 @@ class FeaturesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final eventsAsync = ref.watch(allEventsProvider);
-    final events = eventsAsync.value ?? sampleEvents;
+    final events = eventsAsync.value ?? [];
 
     final textPrimary = AppColors.textPrimaryOf(context);
 

@@ -8,7 +8,7 @@ import '../../../core/widgets/app_background.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/loading_button.dart';
 import '../models/poll_model.dart';
-import '../widgets/poll_card.dart';
+import '../providers/polls_provider.dart';
 
 class CreatePollScreen extends ConsumerStatefulWidget {
   const CreatePollScreen({super.key});

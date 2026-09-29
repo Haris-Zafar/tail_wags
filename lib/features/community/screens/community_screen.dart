@@ -7,22 +7,8 @@ import '../../../core/router/route_paths.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_background.dart';
-import '../../events/providers/events_provider.dart';
-import '../../events/widgets/event_card.dart';
-import '../../polls/models/poll_model.dart';
+import '../../polls/providers/polls_provider.dart';
 import '../../polls/widgets/poll_card.dart';
-
-final samplePolls = [
-  PollModel(
-    id: 'sample-poll-1',
-    question: 'Made in Melanin! Black History Month Social',
-    optionA: 'Made in Melanin! Black History Month Social',
-    optionB: 'Made in Melanin! Black History Month Social',
-    votesA: 12000,
-    votesB: 12000,
-    imageAsset: 'assets/images/event.png',
-  ),
-];
 
 class CommunityScreen extends ConsumerWidget {
   const CommunityScreen({super.key});
@@ -32,7 +18,11 @@ class CommunityScreen extends ConsumerWidget {
     final userDoc = ref.watch(currentUserDocProvider).value;
     final isAdmin = userDoc?.isAdmin ?? false;
 
-    final events = ref.watch(allEventsProvider).value ?? sampleEvents;
+    final pollsAsync = ref.watch(allPollsProvider);
+    final polls = pollsAsync.value ?? [];
+
+    final textPrimary = AppColors.textPrimaryOf(context);
+    final textSecondary = AppColors.textSecondaryOf(context);
 
     return Scaffold(
       appBar: PreferredSize(
@@ -101,18 +91,38 @@ class CommunityScreen extends ConsumerWidget {
                 child: Text(
                   'Today',
                   style: AppTextStyles.caption.copyWith(
-                    color: AppColors.textSecondaryOf(context),
+                    color: textSecondary,
                   ),
                 ),
               ),
 
               const SizedBox(height: 12),
 
-              // Poll Cards
-              ...samplePolls.map((poll) => PollCard(poll: poll)),
-
-              // Event Cards
-              ...events.map((event) => EventCard(event: event)),
+              // Created Polls
+              if (polls.isEmpty)
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 36),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.poll_outlined, size: 56, color: AppColors.primary),
+                        const SizedBox(height: 12),
+                        Text('No Polls Created Yet', style: AppTextStyles.title.copyWith(color: textPrimary)),
+                        const SizedBox(height: 4),
+                        Text(
+                          isAdmin
+                              ? 'Tap the + Vote button below to create the first poll.'
+                              : 'Polls created by admins will appear here.',
+                          style: AppTextStyles.body.copyWith(color: textSecondary),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              else
+                ...polls.map((poll) => PollCard(poll: poll)),
             ],
           ),
         ),

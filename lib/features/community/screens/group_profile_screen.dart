@@ -6,6 +6,8 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_background.dart';
 import '../../events/providers/events_provider.dart';
 import '../../events/widgets/event_card.dart';
+import '../../polls/providers/polls_provider.dart';
+import '../../polls/widgets/poll_card.dart';
 
 class GroupProfileScreen extends ConsumerWidget {
   const GroupProfileScreen({
@@ -17,7 +19,12 @@ class GroupProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final events = ref.watch(allEventsProvider).value ?? sampleEvents;
+    final pollsAsync = ref.watch(allPollsProvider);
+    final eventsAsync = ref.watch(allEventsProvider);
+
+    final polls = pollsAsync.value ?? [];
+    final events = eventsAsync.value ?? [];
+
     final textPrimary = AppColors.textPrimaryOf(context);
     final textSecondary = AppColors.textSecondaryOf(context);
 
@@ -135,32 +142,61 @@ class GroupProfileScreen extends ConsumerWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
-            // Group Events Heading
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Group Events',
-                  style: AppTextStyles.title.copyWith(
-                    color: textPrimary,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-
-            // Events List
+            // Scrollable Content Body (Polls first, then Events)
             Expanded(
-              child: ListView.builder(
+              child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                itemCount: events.length,
-                itemBuilder: (context, index) {
-                  return EventCard(event: events[index]);
-                },
+                children: [
+                  // 1. Group Polls Heading
+                  Text(
+                    'Group Polls',
+                    style: AppTextStyles.title.copyWith(
+                      color: textPrimary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  if (polls.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: Text(
+                        'No polls in this group yet.',
+                        style: AppTextStyles.body.copyWith(color: textSecondary),
+                      ),
+                    )
+                  else
+                    ...polls.map((poll) => PollCard(poll: poll)),
+
+                  const SizedBox(height: 16),
+
+                  // 2. Group Events Heading
+                  Text(
+                    'Group Events',
+                    style: AppTextStyles.title.copyWith(
+                      color: textPrimary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  if (events.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: Text(
+                        'No events in this group yet.',
+                        style: AppTextStyles.body.copyWith(color: textSecondary),
+                      ),
+                    )
+                  else
+                    ...events.map((event) => EventCard(event: event)),
+                ],
               ),
             ),
           ],

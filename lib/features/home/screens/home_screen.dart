@@ -93,7 +93,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               // View Body
               Expanded(
                 child: _isCalendarView
-                    ? _buildCalendarView(allEventsAsync.value ?? sampleEvents, textPrimary)
+                    ? _buildCalendarView(allEventsAsync.value ?? [], textPrimary)
                     : _buildListView(todaysEvents, textPrimary, textSecondary),
               ),
             ],

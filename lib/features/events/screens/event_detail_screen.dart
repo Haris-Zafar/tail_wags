@@ -70,8 +70,16 @@ class EventDetailScreen extends ConsumerWidget {
     final textPrimary = AppColors.textPrimaryOf(context);
     final textSecondary = AppColors.textSecondaryOf(context);
 
-    final event = eventAsync.value ??
-        sampleEvents.firstWhere((e) => e.id == eventId, orElse: () => sampleEvents.first);
+    final event = eventAsync.value;
+
+    if (event == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Event Detail')),
+        body: Center(
+          child: CircularProgressIndicator(color: AppColors.primary),
+        ),
+      );
+    }
 
     final isLiked = currentUser?.likedEventIds.contains(event.id) ?? false;
 
