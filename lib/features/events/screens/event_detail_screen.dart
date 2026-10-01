@@ -91,17 +91,29 @@ class EventDetailScreen extends ConsumerWidget {
             // Top Image Header with Back and Heart overlay
             Stack(
               children: [
-                Image.asset(
-                  event.imageAsset,
-                  height: 300,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    height: 300,
-                    color: AppColors.primaryLight,
-                    child: const Icon(Icons.event, size: 64, color: AppColors.primary),
-                  ),
-                ),
+                event.imageAsset.startsWith('http')
+                    ? Image.network(
+                        event.imageAsset,
+                        height: 300,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          height: 300,
+                          color: AppColors.primaryLight,
+                          child: const Icon(Icons.event, size: 64, color: AppColors.primary),
+                        ),
+                      )
+                    : Image.asset(
+                        event.imageAsset,
+                        height: 300,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          height: 300,
+                          color: AppColors.primaryLight,
+                          child: const Icon(Icons.event, size: 64, color: AppColors.primary),
+                        ),
+                      ),
                 SafeArea(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

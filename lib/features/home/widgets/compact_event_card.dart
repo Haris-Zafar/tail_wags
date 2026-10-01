@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/router/route_paths.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
-import '../models/event_model.dart';
-import '../providers/events_provider.dart';
+import '../../events/models/event_model.dart';
+import '../../events/providers/events_provider.dart';
 
-class EventCard extends ConsumerWidget {
-  const EventCard({
+class CompactEventCard extends ConsumerWidget {
+  const CompactEventCard({
     super.key,
     required this.event,
   });
@@ -37,7 +38,7 @@ class EventCard extends ConsumerWidget {
     );
   }
 
-  Future<void> _toggleLike(BuildContext context, WidgetRef ref, bool isLiked) async {
+  Future<void> _toggleLike(BuildContext context, WidgetRef ref) async {
     final currentUser = ref.read(currentUserDocProvider).value;
     if (currentUser == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -49,6 +50,7 @@ class EventCard extends ConsumerWidget {
       return;
     }
 
+    final isLiked = currentUser.likedEventIds.contains(event.id);
     final eventService = ref.read(eventServiceProvider);
     await eventService.toggleLikeEvent(
       uid: currentUser.uid,
@@ -65,7 +67,10 @@ class EventCard extends ConsumerWidget {
 
     final cardBg = isDark ? AppColors.surfaceDark : AppColors.surface;
     final textPrimary = AppColors.textPrimaryOf(context);
+    final textSecondary = AppColors.textSecondaryOf(context);
     final borderColor = AppColors.borderOf(context);
+
+
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -77,7 +82,7 @@ class EventCard extends ConsumerWidget {
             ? []
             : [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
+                  color: Colors.black.withValues(alpha: 0.03),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -95,130 +100,110 @@ class EventCard extends ConsumerWidget {
             );
           },
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Top Image + Heart Overlay
-                Stack(
+                // Top Row: Avatar Image, Title & Date/Time, Heart Icon
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Small Avatar
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(10),
                       child: event.imageAsset.startsWith('http')
                           ? Image.network(
                               event.imageAsset,
-                              height: 180,
-                              width: double.infinity,
+                              width: 48,
+                              height: 48,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) => Container(
-                                height: 180,
-                                width: double.infinity,
+                                width: 48,
+                                height: 48,
                                 color: AppColors.primaryLight,
                                 child: const Icon(
                                   Icons.event,
-                                  size: 48,
                                   color: AppColors.primary,
+                                  size: 24,
                                 ),
                               ),
                             )
                           : Image.asset(
                               event.imageAsset,
-                              height: 180,
-                              width: double.infinity,
+                              width: 48,
+                              height: 48,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) => Container(
-                                height: 180,
-                                width: double.infinity,
+                                width: 48,
+                                height: 48,
                                 color: AppColors.primaryLight,
                                 child: const Icon(
                                   Icons.event,
-                                  size: 48,
                                   color: AppColors.primary,
+                                  size: 24,
                                 ),
                               ),
                             ),
                     ),
-                    Positioned(
-                      top: 10,
-                      right: 10,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.3),
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          icon: Icon(
-                            isLiked ? Icons.favorite : Icons.favorite_border,
-                            color: isLiked ? AppColors.liked : Colors.white,
-                            size: 22,
+                    const SizedBox(width: 12),
+
+                    // Title + Date & Time
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            event.title,
+                            style: AppTextStyles.title.copyWith(
+                              color: textPrimary,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          onPressed: () => _toggleLike(context, ref, isLiked),
-                          constraints: const BoxConstraints(
-                            minWidth: 36,
-                            minHeight: 36,
+                          const SizedBox(height: 4),
+                          Text(
+                            event.time,
+                            style: AppTextStyles.body.copyWith(
+                              color: textSecondary,
+                              fontSize: 13,
+                            ),
                           ),
-                          padding: EdgeInsets.zero,
-                        ),
+                        ],
                       ),
+                    ),
+
+                    // Heart Icon
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      icon: Icon(
+                        isLiked ? Icons.favorite : Icons.favorite_border,
+                        color: isLiked ? AppColors.liked : textSecondary,
+                        size: 22,
+                      ),
+                      onPressed: () => _toggleLike(context, ref),
                     ),
                   ],
                 ),
 
                 const SizedBox(height: 12),
 
-                // Event Title
-                Text(
-                  event.title,
-                  style: AppTextStyles.title.copyWith(
-                    color: textPrimary,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-
-                const SizedBox(height: 8),
-
-                // Date & Time Row
-                Row(
-                  children: [
-                    Icon(
-                      Icons.calendar_today_outlined,
-                      size: 16,
-                      color: textPrimary,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        event.time,
-                        style: AppTextStyles.body.copyWith(
-                          color: textPrimary,
-                          fontSize: 13,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 6),
-
                 // Location Row
                 Row(
                   children: [
-                    Icon(
-                      Icons.location_on_outlined,
+                    const Icon(
+                      Icons.location_on_rounded,
+                      color: AppColors.primary,
                       size: 18,
-                      color: textPrimary,
                     ),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         event.location,
                         style: AppTextStyles.body.copyWith(
-                          color: textPrimary,
+                          color: textSecondary,
                           fontSize: 13,
                         ),
                         maxLines: 1,
@@ -230,12 +215,28 @@ class EventCard extends ConsumerWidget {
 
                 const SizedBox(height: 12),
 
-                // Add to my calendar button
+                // Add to my calendar Button
                 SizedBox(
-                  width: double.infinity,
+                  height: 38,
                   child: ElevatedButton(
                     onPressed: () => _addToCalendar(context),
-                    child: const Text('Add to my calendar'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      'Add to my calendar',
+                      style: AppTextStyles.button.copyWith(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
               ],

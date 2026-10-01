@@ -86,17 +86,29 @@ class _PollCardState extends ConsumerState<PollCard> {
             // Top Image
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                widget.poll.imageAsset,
-                height: 180,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  height: 180,
-                  color: AppColors.primaryLight,
-                  child: const Icon(Icons.poll, size: 48, color: AppColors.primary),
-                ),
-              ),
+              child: widget.poll.imageAsset.startsWith('http')
+                  ? Image.network(
+                      widget.poll.imageAsset,
+                      height: 180,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        height: 180,
+                        color: AppColors.primaryLight,
+                        child: const Icon(Icons.poll, size: 48, color: AppColors.primary),
+                      ),
+                    )
+                  : Image.asset(
+                      widget.poll.imageAsset,
+                      height: 180,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        height: 180,
+                        color: AppColors.primaryLight,
+                        child: const Icon(Icons.poll, size: 48, color: AppColors.primary),
+                      ),
+                    ),
             ),
 
             const SizedBox(height: 12),

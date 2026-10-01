@@ -51,4 +51,12 @@ class FirestoreService {
   Future<void> updateUsername(String uid, String newUsername) async {
     await _usersRef.doc(uid).update({'username': newUsername});
   }
+
+  /// Update user profile photo URL
+  Future<void> updateProfilePhoto(String uid, String photoUrl) async {
+    await _usersRef.doc(uid).update({
+      'photoUrl': photoUrl,
+      'photoAsset': photoUrl,
+    });
+  }
 }

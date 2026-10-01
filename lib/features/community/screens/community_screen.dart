@@ -26,12 +26,12 @@ class CommunityScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(64),
+        preferredSize: const Size.fromHeight(94),
         child: Container(
           color: AppColors.primary,
           child: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
               child: Row(
                 children: [
                   // Group Avatar
@@ -43,7 +43,7 @@ class CommunityScreen extends ConsumerWidget {
                       );
                     },
                     child: const CircleAvatar(
-                      radius: 20,
+                      radius: 25,
                       backgroundImage: AssetImage('assets/images/person.png'),
                     ),
                   ),
@@ -135,25 +135,51 @@ class CommunityScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 // Vote / Create Poll Button
-                FloatingActionButton.extended(
+                FloatingActionButton(
                   heroTag: 'createPollFab',
                   onPressed: () => context.pushNamed(RoutePaths.createPoll),
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
-                  icon: const Icon(Icons.how_to_vote_outlined),
-                  label: const Text('Vote'),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.how_to_vote_outlined, size: 22),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Vote',
+                        style: AppTextStyles.caption.copyWith(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
 
                 const SizedBox(height: 12),
 
                 // Event / Create Event Button
-                FloatingActionButton.extended(
+                FloatingActionButton(
                   heroTag: 'createEventFab',
                   onPressed: () => context.pushNamed(RoutePaths.createEvent),
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
-                  icon: const Icon(Icons.add),
-                  label: const Text('Event'),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.add, size: 22),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Event',
+                        style: AppTextStyles.caption.copyWith(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             )

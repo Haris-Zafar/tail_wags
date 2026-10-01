@@ -1,5 +1,11 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iconify_flutter_plus/iconify_flutter_plus.dart';
+import 'package:iconify_flutter_plus/icons/mdi.dart';
+import 'package:iconify_flutter_plus/icons/ri.dart';
+
+import '../../core/theme/app_colors.dart';
 
 /// Hosts the 5-tab bottom nav. `navigationShell` is provided by
 /// StatefulShellRoute.indexedStack and remembers each tab's own stack —
@@ -15,35 +21,37 @@ class MainShellScreen extends StatelessWidget {
       body: navigationShell,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: navigationShell.currentIndex,
+        selectedFontSize: 11,
+        unselectedFontSize: 11,
         onTap: (index) => navigationShell.goBranch(
           index,
           // Tapping the already-active tab pops it back to its root.
           initialLocation: index == navigationShell.currentIndex,
         ),
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
+            icon: Iconify(Mdi.paw_outline, color: AppColors.textSecondary),
+            activeIcon: const Iconify(Mdi.paw, color: AppColors.primary,),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event_outlined),
-            activeIcon: Icon(Icons.event),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.star_border_outlined),
+            activeIcon: Icon(Icons.star),
             label: 'Features',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.groups_outlined),
-            activeIcon: Icon(Icons.groups),
+            icon: Icon(FluentIcons.people_community_24_regular, color: AppColors.textSecondary),
+            activeIcon: Icon(FluentIcons.people_community_24_filled, color: AppColors.primary,),
             label: 'Community',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.favorite_outline),
             activeIcon: Icon(Icons.favorite),
             label: 'Favorite',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined),
-            activeIcon: Icon(Icons.settings),
+          const BottomNavigationBarItem(
+            icon: Iconify(Ri.settings_line, color: AppColors.textSecondary),
+            activeIcon: Iconify(Ri.settings_fill, color: AppColors.primary,),
             label: 'Settings',
           ),
         ],

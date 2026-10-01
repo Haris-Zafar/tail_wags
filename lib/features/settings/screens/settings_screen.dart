@@ -8,6 +8,7 @@ import '../../../core/router/route_paths.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_background.dart';
+import '../../../core/widgets/fullscreen_image_viewer.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -54,10 +55,25 @@ class SettingsScreen extends ConsumerWidget {
                 Center(
                   child: Column(
                     children: [
-                      // Avatar
-                      CircleAvatar(
-                        radius: 40,
-                        backgroundImage: AssetImage(userDoc?.photoAsset ?? 'assets/images/person.png'),
+                      // Avatar with Fullscreen Viewer
+                      GestureDetector(
+                        onTap: () {
+                          final img = userDoc?.profileImageProvider ??
+                              const AssetImage('assets/images/person.png');
+                          FullscreenImageViewer.show(
+                            context,
+                            img,
+                            heroTag: 'profile_avatar_settings',
+                          );
+                        },
+                        child: Hero(
+                          tag: 'profile_avatar_settings',
+                          child: CircleAvatar(
+                            radius: 40,
+                            backgroundImage: userDoc?.profileImageProvider ??
+                                const AssetImage('assets/images/person.png'),
+                          ),
+                        ),
                       ),
 
                       const SizedBox(height: 12),

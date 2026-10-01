@@ -118,10 +118,13 @@ class AppTheme {
         type: BottomNavigationBarType.fixed,
         showUnselectedLabels: true,
         selectedLabelStyle: AppTextStyles.caption.copyWith(
+          fontSize: 11.7,
           fontWeight: FontWeight.w600,
           color: AppColors.primary,
         ),
-        unselectedLabelStyle: AppTextStyles.caption,
+        unselectedLabelStyle: AppTextStyles.caption.copyWith(
+          fontSize: 11.7,
+        ),
         elevation: 4,
       ),
 
